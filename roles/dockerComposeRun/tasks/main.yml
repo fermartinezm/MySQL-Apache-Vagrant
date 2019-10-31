@@ -1,0 +1,42 @@
+---
+- name: Create {{ SOURCE_PATH }}/docker_files/apache directory
+  file:
+    path: '{{ SOURCE_PATH }}/docker_files/apache'
+    state: directory
+
+- name: Create Dockerfile apache
+  template:
+    src:  Dockerfile-apache.j2
+    dest: '{{ SOURCE_PATH }}/docker_files/apache/Dockerfile'
+    force: no
+
+- name: Create {{ SOURCE_PATH }}/php_apache directory
+  file:
+    path: '{{ SOURCE_PATH }}/php_apache'
+    state: directory
+
+- name: Create index.php
+  template:
+    src: index.php.j2
+    dest: '{{ SOURCE_PATH }}/php_apache/index.php'
+    force: no
+
+- name: Create docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: '{{ SOURCE_PATH }}/docker-compose.yml'
+    force: no
+
+- name: Tear down existing services
+  docker_compose:
+    project_src: '{{ SOURCE_PATH }}'
+    state: absent
+
+- name: Create and start services
+  docker_compose:
+    project_src: '{{ SOURCE_PATH }}'
+
+- name: Run 'docker-compose up'
+  docker_compose:
+    project_src: '{{ SOURCE_PATH }}'
+    build: no
