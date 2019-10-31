@@ -3,4 +3,4 @@ FROM php:7.2.1-apache
 MAINTAINER Fernando Martinez
 
 RUN apt-get update && apt-get upgrade -y
-RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install mysqli pdo pdo_mysql

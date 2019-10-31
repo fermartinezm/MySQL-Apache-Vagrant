@@ -40,3 +40,14 @@
   docker_compose:
     project_src: '{{ SOURCE_PATH }}'
     build: no
+
+- name: Open ports firewalld
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items:
+    - '{{ MYSQL_PORT }}/tcp'
+    - '{{ APACHE_PORT }}/tcp'
+  notify:
+  - Restart firewalld
