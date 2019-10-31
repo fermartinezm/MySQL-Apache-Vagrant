@@ -1,0 +1,47 @@
+---
+- name: Install updates
+  yum:
+    name: '*'
+    state: latest
+
+- name: Install dependencies
+  yum:
+    name: ['yum-utils','device-mapper-persistent-data','lvm2']
+    state: present
+
+- name: Check if docker repo already exists
+  stat:
+    path: /etc/yum.repos.d/docker-ce.repo
+  register: docker_repo
+
+- name: Add docker repo
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  when: not docker_repo.stat.exists
+
+- name: Install docker '{{ DOCKER_VERSION }}'
+  yum:
+    name: docker-ce-{{ DOCKER_VERSION }}
+    state: present
+
+- name: Create /etc/docker/ directory
+  file:
+    path: /etc/docker
+    state: directory
+    mode: 0644
+    owner: "{{ DOCKER_USER }}"
+    group: "{{ DOCKER_GROUP }}"
+
+- name: Modify file /etc/docker/daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    force: no
+
+- name: Create /etc/systemd/system/docker.service.d directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: 0644
+    owner: "{{ DOCKER_USER }}"
+    group: "{{ DOCKER_GROUP }}"
+  notify: Docker service
