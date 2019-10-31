@@ -3,3 +3,13 @@
   become: true
   roles:
   - dockerInstall
+
+- hosts: host
+  become: true
+  roles:
+  - dockerComposeInstall
+
+- hosts: host
+  become: true
+  roles:
+  - dockerComposeRun
