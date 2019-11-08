@@ -1,15 +1,15 @@
 ---
-- hosts: localhost
+- hosts: host
   become: true
   roles:
   - dockerInstall
 
-- hosts: localhost
+- hosts: host
   become: true
   roles:
   - dockerComposeInstall
 
-- hosts: localhost
+- hosts: host
   become: true
   roles:
   - dockerComposeRun
